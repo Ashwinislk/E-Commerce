@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, String id) {
-        log.info("Entering the dao call for update userdata");
+        log.info("Entering the dao call for update userdata with id :{}",id);
         User user = this.userRepository.findById(id).get();
         user.setName(userDto.getName());
         user.setAbout(userDto.getAbout());
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         user.setImageName(userDto.getImageName());
         this.userRepository.save(user);
         UserDto userDto1 = this.modelMapper.map(user, UserDto.class);
-        log.info("Completed the dao call for update userdata");
+        log.info("Completed the dao call for update userdata with id :{}",id);
         return userDto1;
     }
 
