@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(UserDto userDto, String id) {
         log.info("Entering the dao call for update userdata with id :{}",id);
-        User user = this.userRepository.findById(id).get();
+        User user = this.userRepository.findById(id).orElseThrow(()->new ResourceNotFound(AppConstant.NOT_FOUND + id));
         user.setName(userDto.getName());
         user.setAbout(userDto.getAbout());
         user.setEmail(userDto.getEmail());
@@ -84,8 +84,6 @@ public class UserServiceImpl implements UserService {
         Sort desc = (sortDirection.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) : (Sort.by(sortBy).ascending());
         PageRequest pr = PageRequest.of(pageNumber, pageSize,desc);
         Page<User> pages = this.userRepository.findAll(pr);
-
-
         PageableResponse<UserDto> response = Helper.getPageableResponse(pages, UserDto.class);
         log.info("Completed the dao call for get all userdata");
         return response;

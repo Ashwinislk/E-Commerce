@@ -21,20 +21,20 @@ public class UserDto {
     @Size(min = 5,max = 20,message = "UserName Should be Min 5 Character And Max 30 Character")
     private String name;
 
-
+    @Pattern(regexp = "^[a-z0-9][-a-z0-9._]+@([-a-z0-9]+\\.)+[a-z]{2,5}$", message = "Invalid User Email!")
     private String email;
 
-    @NotBlank(message = "Please enter valid password")
+    @Pattern( regexp = "^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[@#$%^&+=]).*$",
+    message = "password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")
     private String password;
 
     @ImageNameValid(message = "Image Name must not be Blank")
     private String imageName;
 
-    @NotBlank
+    @Size(min=4,max=6,message = "Invalid Gender")
     private String gender;
 
-    @NotBlank
-    @Size(message = "Please Enter About User")
+    @NotBlank(message = "Write Something About Yourself")
     private String about;
 
 }
