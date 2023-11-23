@@ -1,4 +1,4 @@
-package com.electronicstore.serviceImpl;
+package com.electronicstore.service.Impl;
 
 import com.electronicstore.constants.AppConstant;
 import com.electronicstore.entity.User;
