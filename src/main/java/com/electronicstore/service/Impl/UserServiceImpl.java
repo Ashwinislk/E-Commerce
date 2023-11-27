@@ -11,12 +11,14 @@ import com.electronicstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${user.profile.image.path}")
+    private String path;
 
     @Autowired
     private UserRepository userRepository;
@@ -73,6 +78,12 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String id) {
         log.info("Entering the dao call for delete single userdata :{}",id);
         User user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFound(AppConstant.NOT_FOUND + id));
+        String imageName = user.getImageName();
+        String fullPath=path+imageName;
+        File imagefile=new File(fullPath);
+        if(imagefile.exists()){
+            imagefile.delete();
+        }
         log.info("Completed the dao call for delete single userdata :{}",id);
         this.userRepository.delete(user);
 

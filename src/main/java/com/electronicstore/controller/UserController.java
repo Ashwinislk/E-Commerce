@@ -11,12 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -186,6 +191,15 @@ public class UserController {
         log.info("Completed the request for upload image by id:{}",id);
         return new ResponseEntity<ImageResponse>(imageResponse, HttpStatus.CREATED);
     }
+     @GetMapping("/users/image/{id}")
+    public void saveUserImage(@PathVariable String id, HttpServletResponse response) throws IOException {
+         UserDto user = userService.getSingleUser(id);
+        log.info("user image name :{}",user.getImageName());
+         InputStream resource = fileService.getResource(path, user.getImageName());
+         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+         StreamUtils.copy(resource,response.getOutputStream());
+     }
+
+    }
 
 
-}
