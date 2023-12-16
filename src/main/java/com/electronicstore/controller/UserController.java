@@ -66,7 +66,7 @@ public class UserController {
         log.info("Entering the request for update user data :{}", id);
         UserDto userDto = this.userService.updateUser(user, id);
         log.info("Completed the request for update user data :{}", id);
-        return new ResponseEntity<UserDto>(userDto, HttpStatus.CREATED);
+        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
     }
 
     /**

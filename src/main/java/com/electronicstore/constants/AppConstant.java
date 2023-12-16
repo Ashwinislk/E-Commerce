@@ -16,4 +16,6 @@ public class AppConstant {
 
     public static final String SORT_DIR="asc";
 
+    public static final String PRODUCTS_SORT_BY="title";
+
 }
