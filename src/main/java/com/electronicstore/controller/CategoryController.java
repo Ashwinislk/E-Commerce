@@ -1,18 +1,23 @@
 package com.electronicstore.controller;
 
 import com.electronicstore.constants.AppConstant;
-import com.electronicstore.payload.ApiResponse;
-import com.electronicstore.payload.CategoryDto;
-import com.electronicstore.payload.PageableResponse;
-import com.electronicstore.payload.UserDto;
+import com.electronicstore.payload.*;
 import com.electronicstore.service.CategoryService;
+import com.electronicstore.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Slf4j
 @RestController
@@ -21,6 +26,12 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Value("${category.profile.image.path}")
+    private String path;
+
+    @Autowired
+    private FileService fileService;
 
     /**
      * @author Ashwini Shelke
@@ -108,6 +119,48 @@ public class CategoryController {
         this.categoryService.delete(categoryid);
         log.info("Completed the request for delete category data with categoryid:{}",categoryid);
         return new ResponseEntity<ApiResponse>(api,HttpStatus.OK);
+
+    }
+
+    /**
+     * @author Ashwini Shelke
+     * @apiNote upload category Image
+     * @param image
+     * @param categoryId
+     * @return
+     * @throws IOException
+     * @throws IOException
+     * @since 1.0v
+     */
+    @PostMapping("/categories/image/{categoryId}")
+    public ResponseEntity<ImageResponse> uploadImage(@RequestParam MultipartFile image, @PathVariable String categoryId) throws IOException, IOException {
+        log.info("Entering the request for upload image with categoryId:{}", categoryId);
+        String imageName = this.fileService.uploadFile(image, path);
+        CategoryDto category = this.categoryService.getSingleCategory(categoryId);
+        category.setCoverImage(imageName);
+        CategoryDto updateCategory = this.categoryService.updateCategory(category, categoryId);
+        ImageResponse imageResponse = ImageResponse.builder().message("Image Upload Successfully").imageName(imageName).status(true).httpStatus(HttpStatus.CREATED).build();
+        log.info("Completed the request for upload image with categoryId:{}", categoryId);
+        return new ResponseEntity<ImageResponse>(imageResponse, HttpStatus.CREATED);
+    }
+
+    /**
+     * @author Ashwini Shelke
+     * @apiNote get category image
+     * @param categoryId
+     * @param response
+     * @throws IOException
+     * @since 1.0v
+     */
+    @GetMapping("/categories/image/{categoryId}")
+    public void getCategoryImage(@PathVariable String categoryId, HttpServletResponse response) throws IOException {
+        log.info("Enter the request for Get Image with categoryId : {}", categoryId);
+        CategoryDto singleCategory = categoryService.getSingleCategory(categoryId);
+        log.info("CategoryImage Name : {}", singleCategory.getCoverImage());
+        InputStream resource = fileService.getResource(path, singleCategory.getCoverImage());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        log.info("Completed the request for Get Image with categoryId : {}", categoryId);
+        StreamUtils.copy(resource, response.getOutputStream());
 
     }
 

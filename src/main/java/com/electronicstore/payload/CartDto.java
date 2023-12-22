@@ -23,7 +23,6 @@ public class CartDto {
 
     private Date createdAt;
 
-    @OneToOne
     private UserDto user;
 
     private List<CartItemDto> items=new ArrayList<>();

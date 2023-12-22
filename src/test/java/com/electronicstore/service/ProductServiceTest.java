@@ -131,10 +131,6 @@ public class ProductServiceTest {
         Assertions.assertNotNull(productsByTitle);
         Assertions.assertEquals(2,productsByTitle.getContent().size());
     }
-    @Test
-    public void createProductWithCategoryTest(){
-
-    }
 
 
 }

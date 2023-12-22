@@ -45,43 +45,72 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto addItemToCart(String userId, AddItemToCartRequest request) {
-        Integer quantity = request.getQuantity();
-        String productId = request.getProductId();
+        {
 
-        if(quantity<=0){
-           throw new BadApiRequest(AppConstant.NOT_VALID_QUANTITY);
-        }
+            Integer quantity = request.getQuantity();
+            String productId = request.getProductId();
 
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFound(AppConstant.NOT_FOUND + productId));
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound(AppConstant.NOT_FOUND + userId));
-        Cart cart=null;
-        try{
-            cartRepository.findByUser(user).get();
-        }catch (NoSuchElementException e){
-            cart=new Cart();
-            cart.setCartId(UUID.randomUUID().toString());
-            cart.setCreatedAt(new Date());
-        }
-        AtomicReference<Boolean> updated = new AtomicReference<>(false);
-        List<CartItem> items = cart.getItems();
+            if (quantity <= 0) {
+                throw new BadApiRequest(AppConstant.NOT_VALID_QUANTITY);
 
-        items.stream().map(item->{
-            if(item.getProduct().getPrice().equals(productId)){
-                item.setQuantity(quantity);
-                item.setTotalPrice(quantity*product.getPrice());
-                updated.set(true);
             }
-            return item;
-        }).collect(Collectors.toList());
-        if(!updated.get()){
-            CartItem cartItem = CartItem.builder().quantity(quantity)
-                    .totalPrice(quantity * product.getPrice())
-                    .cart(cart).product(product).build();
-            cart.getItems().add(cartItem);
+
+            //Find A Product
+            Product product = this.productRepository.findById(productId).orElseThrow(() -> new ResourceNotFound(AppConstant.NOT_FOUND + productId));
+            // Find User From Cart
+            User user = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound(AppConstant.NOT_FOUND + userId));
+
+            // We Find Cart From User
+            Cart cart = null;
+            try {
+                cart = cartRepository.findByUser(user).get();
+            } catch (NoSuchElementException ex) {
+                // If User Has No Cart
+                cart = new Cart();
+                cart.setCartId(UUID.randomUUID().toString());
+
+                cart.setCreatedAt(new Date());
+            }
+
+            // Perform Cart Operation
+            // If Cart item Already Present then update
+            List<CartItem> items = cart.getItems();
+
+            AtomicReference<Boolean> updated = new AtomicReference<>(false);
+
+            items = items.stream().map(item -> {
+
+                if (item.getProduct().getProductId().equals(productId)) {
+                    //Iteam Already Present in Cart
+                    item.setQuantity(quantity);
+                    item.setTotalPrice(quantity * product.getPrice());
+                    updated.set(true);
+                }
+
+                return item;
+            }).collect(Collectors.toList());
+
+//        cart.setItems(updatedList);
+
+
+            if (!updated.get()) {
+                CartItem cartItem = CartItem.builder()
+                        .quantity(quantity)
+                        .totalPrice(quantity * product.getPrice())
+                        .cart(cart)
+                        .product(product)
+                        .build();
+                cart.getItems().add(cartItem);
+            }
+
+
+            cart.setUser(user);
+
+            Cart updatedCart = cartRepository.save(cart);
+
+
+            return this.modelMapper.map(updatedCart, CartDto.class);
         }
-        cart.setUser(user);
-        Cart updateCart = cartRepository.save(cart);
-        return  modelMapper.map(updateCart,CartDto.class);
     }
 
     @Override

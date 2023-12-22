@@ -26,7 +26,7 @@ public class Product {
     private String description;
 
     @Column(name="product_price")
-    private Double price;
+    private Integer price;
 
     @Column(name="product_quantity")
     private Integer quantity;
@@ -41,7 +41,10 @@ public class Product {
     private Boolean stock;
 
     @Column(name="product_discountPrice")
-    private Double discountPrice;
+    private Integer discountPrice;
+
+    @Column(name="product_image")
+    private String image;
 
     @ManyToOne
     private Category category;

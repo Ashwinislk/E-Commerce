@@ -18,7 +18,7 @@ public class ProductDto {
 
     private String description;
 
-    private Double price;
+    private Integer price;
 
     private Integer quantity;
 
@@ -28,7 +28,9 @@ public class ProductDto {
 
     private Boolean stock;
 
-    private Double discountPrice;
+    private Integer discountPrice;
+
+    private String image;
 
     private CategoryDto category;
 }

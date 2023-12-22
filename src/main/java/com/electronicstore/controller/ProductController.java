@@ -2,14 +2,24 @@ package com.electronicstore.controller;
 
 import com.electronicstore.constants.AppConstant;
 import com.electronicstore.payload.ApiResponse;
+import com.electronicstore.payload.ImageResponse;
 import com.electronicstore.payload.PageableResponse;
 import com.electronicstore.payload.ProductDto;
+import com.electronicstore.service.FileService;
 import com.electronicstore.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping("/api")
@@ -18,6 +28,13 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Value("${product.profile.image.path}")
+    private String path;
+
+    @Autowired
+    private FileService fileService;
+
 
     /**
      * @author Ashwini Shelke
@@ -227,6 +244,51 @@ public class ProductController {
         ProductDto updateCategory = this.productService.updateCategory(categoryId, productId);
         log.info("Completed the request for update product with category with categoryId and productId:{}:{}",categoryId,productId);
         return new ResponseEntity<>(updateCategory,HttpStatus.OK);
+
+    }
+
+    /**
+     * @author Ashwini Shelke
+     * @apiNote upload product image
+     * @param image
+     * @param productId
+     * @return
+     * @throws IOException
+     * @since 1.0v
+     */
+    @PostMapping("/image/{productId}")
+    public ResponseEntity<ImageResponse> uploadImage(@RequestParam MultipartFile image, @PathVariable String productId) throws IOException {
+
+        log.info("Enter the  request for upload product image with productId:{}",productId);
+        String file = this.fileService.uploadFile(image, path);
+
+        ProductDto product = this.productService.getSingleProduct(productId);
+
+        product.setImage(file);
+
+        ProductDto updatedProduct = this.productService.updateProduct(product, productId);
+
+        ImageResponse imageResponse = ImageResponse.builder().message("Image Uploaded").imageName(file).status(true).httpStatus(HttpStatus.CREATED).build();
+        log.info("Completed the  request for upload product image with productId:{}",productId);
+        return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
+
+    }
+
+    /**
+     * @author Ashwini Shelke
+     * @apiNote get product Image
+     * @param productId
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/image/{ProductId}")
+    public void getProductImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
+        log.info("Enter the  request for get product image with productId:{}",productId);
+        ProductDto product = this.productService.getSingleProduct(productId);
+        InputStream resource = this.fileService.getResource(path, product.getImage());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource, response.getOutputStream());
+        log.info("Completed the  request for get product image with productId:{}",productId);
 
     }
 }
