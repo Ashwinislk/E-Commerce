@@ -16,6 +16,7 @@ import org.springframework.boot.context.config.ConfigDataResourceNotFoundExcepti
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -35,6 +36,9 @@ public class UserServiceImpl implements UserService {
     private String path;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Override
@@ -42,6 +46,7 @@ public class UserServiceImpl implements UserService {
         log.info("Entering the dao call for save userdata");
         String str = UUID.randomUUID().toString();
         userDto.setUserId(str);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = this.modelMapper.map(userDto, User.class);
         this.userRepository.save(user);
         UserDto userDto1 = this.modelMapper.map(user, UserDto.class);

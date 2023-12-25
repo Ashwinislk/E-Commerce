@@ -12,6 +12,7 @@ import com.electronicstore.repository.CartRepository;
 import com.electronicstore.repository.OrderRepository;
 import com.electronicstore.repository.UserRepository;
 import com.electronicstore.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private UserRepository userRepository;
@@ -43,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto createOrder(CreateOrderRequest orderDto) {
+        log.info("Entering the dao call for create order");
         {
 
             // Create UserId & CartId From oderDto
@@ -94,32 +97,36 @@ public class OrderServiceImpl implements OrderService {
             cart.getItems().clear();
             cartRepository.save(cart);
             Order saveOrder = orderRepository.save(order);
-
+            log.info("Completed the dao call for create order");
             return this.modelMapper.map(saveOrder, OrderDto.class);
         }
     }
 
     @Override
     public void removeOrder(String orderId) {
+        log.info("Entering the dao call for remove order with orderId:{}",orderId);
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFound(AppConstant.NOT_FOUND + orderId));
         orderRepository.delete(order);
+        log.info("Completed the dao call for remove order with orderId:{}",orderId);
     }
 
     @Override
     public List<OrderDto> getOrdersOfUser(String userId) {
+        log.info("Entering the dao call for get orders of users with userId:{}",userId);
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound(AppConstant.NOT_FOUND + userId));
         List<Order> orders = orderRepository.findByUser(user);
         List<OrderDto> orderDtos = orders.stream().map(order -> modelMapper.map(order, OrderDto.class)).collect(Collectors.toList());
-
-
+        log.info("Completed the dao call for get orders of users with userId:{}",userId);
         return orderDtos;
     }
 
     @Override
     public PageableResponse<OrderDto> getOrders(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+        log.info("Entering the dao call for get orders");
         Sort sort=(sortDir.equalsIgnoreCase("desc"))?(Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
         PageRequest pageRequest = PageRequest.of(pageSize, pageNumber, sort);
         Page<Order> page = orderRepository.findAll(pageRequest);
+        log.info("Completed the dao call for get orders");
         return Helper.getPageableResponse(page,OrderDto.class);
     }
 }
