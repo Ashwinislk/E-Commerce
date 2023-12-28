@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
 
             }).collect(Collectors.toList());
 
-            order.setOrederitems(orderItems);
+            order.setOrderitems(orderItems);
             order.setOrderAmount(orderAmount.get());
 
             cart.getItems().clear();

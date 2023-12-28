@@ -1,11 +1,13 @@
 package com.electronicstore.service.Impl;
 
 import com.electronicstore.constants.AppConstant;
+import com.electronicstore.entity.Role;
 import com.electronicstore.entity.User;
 import com.electronicstore.exception.ResourceNotFound;
 import com.electronicstore.payload.Helper;
 import com.electronicstore.payload.PageableResponse;
 import com.electronicstore.payload.UserDto;
+import com.electronicstore.repository.RoleRepository;
 import com.electronicstore.repository.UserRepository;
 import com.electronicstore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private  RoleRepository roleRepository;
+
+    @Value("${normal.role.id}")
+    private String normalRoleId;
+
+    @Value("${admin.role.id}")
+    private String adminRoleId;
+
     @Override
     public UserDto createUser(UserDto userDto) {
         log.info("Entering the dao call for save userdata");
@@ -48,8 +59,11 @@ public class UserServiceImpl implements UserService {
         userDto.setUserId(str);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = this.modelMapper.map(userDto, User.class);
+        Role role = this.roleRepository.findById(normalRoleId).get();
+        user.getRoles().add(role);
         this.userRepository.save(user);
         UserDto userDto1 = this.modelMapper.map(user, UserDto.class);
+
         log.info("Completed the dao call for save userdata");
         return userDto1;
     }
@@ -131,5 +145,10 @@ public class UserServiceImpl implements UserService {
         log.info("Completed the dao call for get user email and password:{} and :{}",email,password);
         return userDto;
 
+    }
+
+    @Override
+    public Optional<User> findUserByEmailOptional(String email) {
+        return userRepository.findByEmail(email);
     }
 }

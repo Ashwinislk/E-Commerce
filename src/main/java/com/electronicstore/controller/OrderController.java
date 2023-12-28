@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/orders")
     public ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest request) {
         log.info("Entering the request for create order with order data");
@@ -29,7 +31,7 @@ public class OrderController {
         log.info("Completed the request for create order with order data");
         return new ResponseEntity<OrderDto>(order, HttpStatus.CREATED);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/orders/orderId/{orderId}")
     public ResponseEntity<ApiResponse> removeOrder(@PathVariable String orderId) {
         log.info("Entering the request for remove order with orderId:{}",orderId);

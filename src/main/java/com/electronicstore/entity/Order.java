@@ -40,5 +40,5 @@ public class Order {
     private  User user;
 
     @OneToMany(mappedBy = "order",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private List<OrderItem> orederitems=new ArrayList<>();
+    private List<OrderItem> orderitems=new ArrayList<>();
 }

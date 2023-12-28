@@ -5,6 +5,7 @@ import com.electronicstore.payload.PageableResponse;
 import com.electronicstore.payload.UserDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -24,5 +25,6 @@ public interface UserService {
 
     public UserDto getUserByEmailAndPassword(String email, String password);
 
+    Optional<User> findUserByEmailOptional(String email);
 
 }

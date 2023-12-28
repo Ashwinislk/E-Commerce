@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +44,7 @@ public class ProductController {
      * @return
      * @since 1.0 v
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/products")
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
         log.info("Entering the request for save product data");
@@ -59,6 +61,7 @@ public class ProductController {
      * @return
      * @since 1.0v
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/products/update/productId/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto, @PathVariable String productId) {
         log.info("Entering the request for update product data with productId:{}",productId);
@@ -111,6 +114,7 @@ public class ProductController {
      * @return
      * @since 1.0v
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/products/productId/{productId}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable String productId) {
         log.info("Entering the request for delete single product data with productId:{}",productId);
@@ -197,6 +201,7 @@ public class ProductController {
      * @return
      * @since 1.0v
      */
+    @PreAuthorize("hasRole('ADMIN')")
    @PostMapping("/category/{categoryId}")
     public ResponseEntity<ProductDto> saveProductWithCategoryId(@PathVariable String categoryId,@RequestBody ProductDto productDto){
        log.info("Entering the request for save products with category with categoryId:{}",categoryId);
@@ -256,6 +261,7 @@ public class ProductController {
      * @throws IOException
      * @since 1.0v
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/image/{productId}")
     public ResponseEntity<ImageResponse> uploadImage(@RequestParam MultipartFile image, @PathVariable String productId) throws IOException {
 

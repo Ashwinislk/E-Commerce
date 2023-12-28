@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +41,7 @@ public class CategoryController {
      * @return
      * @since 1.0v
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/categories")
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
         log.info("Entering the request for save category data");
@@ -56,6 +58,7 @@ public class CategoryController {
      * @return
      * @since 1.0v
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/categories/categoryid/{categoryid}")
     public ResponseEntity<CategoryDto> updatecategory(@Valid @RequestBody CategoryDto categoryDto,@PathVariable String categoryid){
         log.info("Entering the request for update category data with categoryid:{}",categoryid);
@@ -109,6 +112,7 @@ public class CategoryController {
      * @return
      * @since 1.0v
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/categories/categoryid/{categoryid}")
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable String categoryid){
         log.info("Entering the request for delete category data with categoryid:{}",categoryid);
@@ -132,6 +136,7 @@ public class CategoryController {
      * @throws IOException
      * @since 1.0v
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/categories/image/{categoryId}")
     public ResponseEntity<ImageResponse> uploadImage(@RequestParam MultipartFile image, @PathVariable String categoryId) throws IOException, IOException {
         log.info("Entering the request for upload image with categoryId:{}", categoryId);

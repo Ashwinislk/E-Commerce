@@ -44,16 +44,16 @@ public class ProductServiceTest {
     public void init(){
          product= Product.builder().title("Mi")
                 .description("This contains mobile")
-                .price(50000.00)
-                .discountPrice(10000.00)
+                .price(50000)
+                .discountPrice(10000)
                 .quantity(20)
                 .stock(true)
                 .live(false).build();
 
          product1= Product.builder().title("Vico")
                 .description("This contains mobile")
-                .price(50000.00)
-                .discountPrice(10000.00)
+                .price(50000)
+                .discountPrice(10000)
                 .quantity(20)
                 .stock(true)
                 .live(false).build();
@@ -78,8 +78,8 @@ public class ProductServiceTest {
     public void updateProductTest(){
          productDto = ProductDto.builder().title("Mi")
                 .description("This contains mobile")
-                .price(50000.00)
-                .discountPrice(10000.00)
+                .price(50000)
+                .discountPrice(10000)
                 .quantity(20)
                 .stock(true)
                 .live(false).build();

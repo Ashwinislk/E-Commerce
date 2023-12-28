@@ -45,8 +45,8 @@ public class ProductControllerTest {
     public void init() {
         product = Product.builder().title("Mi")
                 .description("This contains mobile")
-                .price(50000.00)
-                .discountPrice(10000.00)
+                .price(50000)
+                .discountPrice(10000)
                 .quantity(20)
                 .stock(true)
                 .live(false).build();
@@ -104,16 +104,16 @@ public class ProductControllerTest {
     public void getAllProductsTest() throws Exception {
         ProductDto productDto = ProductDto.builder().title("Mi")
                 .description("This contains mobile")
-                .price(50000.00)
-                .discountPrice(10000.00)
+                .price(50000)
+                .discountPrice(10000)
                 .quantity(20)
                 .stock(true)
                 .live(false).build();
 
         ProductDto productDto1 = ProductDto.builder().title("Vivo")
                 .description("This contains mobile")
-                .price(60000.00)
-                .discountPrice(15000.00)
+                .price(60000)
+                .discountPrice(15000)
                 .quantity(22)
                 .stock(true)
                 .live(false).build();
@@ -143,16 +143,16 @@ public class ProductControllerTest {
     public void getByLiveTrueTest() throws Exception {
         ProductDto productDto = ProductDto.builder().title("Mi")
                 .description("This contains mobile")
-                .price(50000.00)
-                .discountPrice(10000.00)
+                .price(50000)
+                .discountPrice(10000)
                 .quantity(20)
                 .stock(true)
                 .live(false).build();
 
         ProductDto productDto1 = ProductDto.builder().title("Vivo")
                 .description("This contains mobile")
-                .price(60000.00)
-                .discountPrice(15000.00)
+                .price(60000)
+                .discountPrice(15000)
                 .quantity(22)
                 .stock(true)
                 .live(false).build();
@@ -175,8 +175,8 @@ public class ProductControllerTest {
         ProductDto productDto = ProductDto.builder()
                 .title("Apple")
                 .description("This Launched in 2023")
-                .price(50000.00)
-                .discountPrice(45000.00)
+                .price(50000)
+                .discountPrice(45000)
                 .quantity(15)
                 .live(true)
                 .stock(true).build();
@@ -184,8 +184,8 @@ public class ProductControllerTest {
         ProductDto productDto1 = ProductDto.builder()
                 .title("Apple")
                 .description("This Launched in 2022")
-                .price(100000.00)
-                .discountPrice(95000.00).quantity(5)
+                .price(100000)
+                .discountPrice(95000).quantity(5)
                 .live(true).stock(true).build();
 
         PageableResponse<ProductDto> pages= new PageableResponse<>();

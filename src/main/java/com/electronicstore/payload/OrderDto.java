@@ -39,5 +39,5 @@ public class OrderDto {
     private UserDto user;
 
 
-    private List<OrderItemDto> orederitems=new ArrayList<>();
+    private List<OrderItemDto> orderitems=new ArrayList<>();
 }
